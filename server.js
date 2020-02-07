@@ -1,5 +1,8 @@
 const express = require("express");
 const app = express();
+const bcrypt = require("bcrypt");
+
+let users = [];
 
 app.use(express.json());
 
@@ -13,6 +16,10 @@ app.get("/", (req, res) => {
 
 app.post("/register", (req, res) => {
   console.log("body", req.body);
+  const encryptedPassword = bcrypt.hashSync(req.body.password, 10);
+  const user = { email: req.body.email, password: encryptedPassword };
+  users = [...users, user];
+  console.log("users", users);
   res.send("todo register");
 });
 
