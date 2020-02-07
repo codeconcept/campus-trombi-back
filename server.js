@@ -30,6 +30,28 @@ app.post("/register", (req, res) => {
   res.json({ token: jwt.sign(payload, secret) });
 });
 
+app.post("/login", (req, res) => {
+  console.log("body", req.body);
+  const retrievedEmail = req.body.email;
+  const user = users.find(user => user.email === retrievedEmail);
+  if (!user) {
+    return res
+      .status(401)
+      .json({ message: `No user with email ${retrievedEmail}` });
+  }
+  const password = req.body.password;
+  const isMatchPassword = bcrypt.compareSync(password, user.password);
+  if (!isMatchPassword) {
+    return res.status(401).json({ message: `${password} is a wrong password` });
+  }
+  const payload = {
+    email: user.email,
+    iat: Date.now(),
+    role: "student"
+  };
+  res.json({ token: jwt.sign(payload, secret) });
+});
+
 const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
