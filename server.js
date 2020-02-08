@@ -2,10 +2,12 @@ const express = require("express");
 const app = express();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+var cors = require("cors");
 
 let users = [];
 const secret = "yeah-bad-secret-but-just-for-testing";
 
+app.use(cors());
 app.use(express.json());
 
 app.get("/favicon.ico", (req, res) => {
