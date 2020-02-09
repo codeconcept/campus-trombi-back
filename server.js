@@ -22,7 +22,11 @@ app.post("/register", (req, res) => {
   console.log("register / body", req.body);
   const encryptedPassword = bcrypt.hashSync(req.body.password, 10);
   const retrievedEmail = req.body.email.trim();
-  const user = { email: retrievedEmail, password: encryptedPassword };
+  const user = {
+    email: retrievedEmail,
+    password: encryptedPassword,
+    name: req.body.name
+  };
   // email address must be unique
   const userIndex = users.findIndex(user => user.email === retrievedEmail);
   console.log("userIndex", userIndex);
@@ -38,7 +42,10 @@ app.post("/register", (req, res) => {
     iat: Date.now(),
     role: "student"
   };
-  res.json({ token: jwt.sign(payload, secret) });
+  res.json({
+    token: jwt.sign(payload, secret),
+    user: { name: req.body.name, email: req.body.email }
+  });
 });
 
 app.post("/login", (req, res) => {
@@ -60,7 +67,10 @@ app.post("/login", (req, res) => {
     iat: Date.now(),
     role: "student"
   };
-  res.json({ token: jwt.sign(payload, secret) });
+  res.json({
+    token: jwt.sign(payload, secret),
+    user: { name: req.body.name, email: req.body.email }
+  });
 });
 
 const PORT = 3001;
