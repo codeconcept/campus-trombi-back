@@ -19,9 +19,18 @@ app.get("/", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-  console.log("body", req.body);
+  console.log("register / body", req.body);
   const encryptedPassword = bcrypt.hashSync(req.body.password, 10);
-  const user = { email: req.body.email, password: encryptedPassword };
+  const retrievedEmail = req.body.email.trim();
+  const user = { email: retrievedEmail, password: encryptedPassword };
+  // email address must be unique
+  const userIndex = users.findIndex(user => user.email === retrievedEmail);
+  console.log("userIndex", userIndex);
+  if (userIndex !== -1) {
+    return res.status(422).json({
+      message: `Conflict. User with ${retrievedEmail} already exists`
+    });
+  }
   users = [...users, user];
   console.log("users", users);
   const payload = {
@@ -33,7 +42,7 @@ app.post("/register", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  console.log("body", req.body);
+  console.log("login / body", req.body);
   const retrievedEmail = req.body.email;
   const user = users.find(user => user.email === retrievedEmail);
   if (!user) {
