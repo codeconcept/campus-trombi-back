@@ -114,6 +114,7 @@ app.put("/users/:id", (req, res) => {
   const updatedUser = Object.assign(user, req.body);
   users = users.map(user => (user.id === id ? updatedUser : user));
   console.log("users after PUT", users);
+  res.json({ message: `user ${id} updated` });
 });
 
 const PORT = 3001;
